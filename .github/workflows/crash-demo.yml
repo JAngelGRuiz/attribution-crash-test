@@ -1,0 +1,40 @@
+name: crash-demo
+
+on: [push, pull_request]
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 15
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: trybe
+          POSTGRES_PASSWORD: trybe
+          POSTGRES_DB: attribution
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U trybe -d attribution"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 15
+    env:
+      REDIS_URL: redis://127.0.0.1:6379
+      DATABASE_URL: postgres://trybe:trybe@127.0.0.1:5432/attribution
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run demo

@@ -1,0 +1,28 @@
+{
+  "name": "attribution-pipeline-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Crash-safe last-click attribution over Redis Streams + Postgres: at-least-once delivery, idempotent consumers, XAUTOCLAIM recovery, append-only ledger.",
+  "engines": { "node": ">=20.6" },
+  "scripts": {
+    "infra:up": "docker compose up -d --wait",
+    "infra:down": "docker compose down -v",
+    "demo": "tsx scripts/crash-demo.ts",
+    "test": "tsx scripts/crash-demo.ts",
+    "verify": "tsx scripts/verify.ts",
+    "produce": "tsx src/producer.ts",
+    "worker": "tsx src/worker.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ioredis": "^5.6.1",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/pg": "^8.15.5",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
